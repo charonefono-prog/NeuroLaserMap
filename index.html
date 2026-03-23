@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroLaserMap - Sistema de Mapeamento</title>
+    <title>NeuroLaserMap - Painel de Controle</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0066CC">
     <style>
@@ -12,14 +12,14 @@
             --success: #10B981;
             --warning: #F59E0B;
             --danger: #EF4444;
-            --bg: #F5F7FA;
+            --bg: #F0F2F5;
             --text: #1A1A1A;
-            --muted: #6B7280;
+            --muted: #64748B;
             --white: #FFFFFF;
-            --border: #E5E7EB;
+            --border: #E2E8F0;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -27,322 +27,387 @@
             box-sizing: border-box;
         }
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
         }
         .card {
             background: var(--white);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
         }
         .hidden { display: none !important; }
-        h1 { color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
-        h2 { font-size: 18px; margin: 20px 0 15px 0; }
-        p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+        h1 { color: var(--primary); margin: 0; font-size: 28px; font-weight: 800; }
+        h2 { font-size: 20px; margin: 0 0 20px 0; color: #334155; }
+        h3 { font-size: 16px; margin: 0 0 15px 0; color: #475569; }
         
+        /* Layout Grid para Desktop */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+        }
+
         /* Form Styles */
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: #475569; }
         input, select, textarea {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 10px 12px;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 6px;
             box-sizing: border-box;
-            font-size: 16px;
+            font-size: 15px;
+            transition: border-color 0.2s;
         }
+        input:focus { border-color: var(--primary); outline: none; }
+        
         button {
-            padding: 12px 20px;
+            padding: 10px 20px;
             background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: background 0.2s;
         }
-        button.full { width: 100%; padding: 14px; font-size: 16px; }
-        button.secondary { background-color: #6B7280; }
+        button.full { width: 100%; padding: 12px; font-size: 16px; }
         button.success { background-color: var(--success); }
-        button:active { opacity: 0.8; }
+        button.secondary { background-color: #94A3B8; }
+        button:hover { opacity: 0.9; }
 
-        /* Dashboard Styles */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
+        /* Stats */
+        .stats-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
         }
-        .stat-box {
+        .stat-card {
+            flex: 1;
             background: var(--white);
-            padding: 15px;
+            padding: 20px;
             border-radius: 12px;
             border: 1px solid var(--border);
+            text-align: center;
         }
-        .stat-value { font-size: 24px; font-weight: bold; margin: 5px 0; }
-        .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
-        
-        /* List Styles */
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-        .list-item:last-child { border-bottom: none; }
-        .list-info h3 { margin: 0; font-size: 16px; }
-        .list-info p { margin: 5px 0 0 0; font-size: 12px; }
+        .stat-value { font-size: 32px; font-weight: 800; color: var(--primary); }
+        .stat-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 13px; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        tr:hover { background-color: #F8FAFC; cursor: pointer; }
 
         /* Navigation */
-        .nav-bar {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 32px;
+            background: var(--white);
+            padding: 20px 40px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .back-btn { color: var(--primary); text-decoration: none; font-weight: bold; cursor: pointer; }
 
         .footer {
-            margin-top: 40px;
-            padding: 20px;
-            border-top: 1px solid var(--border);
+            margin-top: 60px;
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             color: var(--muted);
+            padding-bottom: 40px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- TELA DE AUTORIZAÇÃO -->
-        <div id="auth-screen" class="hidden">
-            <div class="card" style="text-align: center; max-width: 400px; margin: 100px auto;">
+    <!-- TELA DE LOGIN (DESKTOP) -->
+    <div id="auth-screen" class="hidden">
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+            <div class="card" style="width: 400px; text-align: center; padding: 40px;">
                 <h1>NeuroLaserMap</h1>
-                <p>Solicite acesso para utilizar o sistema.</p>
-                <input type="text" id="auth-name" placeholder="Nome Completo">
-                <button class="full" onclick="handleAuth()">Entrar</button>
+                <p style="margin: 20px 0;">Painel de Controle Profissional</p>
+                <input type="password" id="auth-code" placeholder="Digite seu código de acesso" style="text-align: center; margin-bottom: 20px;">
+                <button class="full" onclick="handleAuth()">Acessar Painel</button>
             </div>
         </div>
+    </div>
 
-        <!-- DASHBOARD -->
-        <div id="dashboard-screen" class="hidden">
-            <div class="nav-bar">
-                <h1>NeuroLaserMap</h1>
+    <!-- PAINEL PRINCIPAL (DESKTOP) -->
+    <div id="main-panel" class="hidden">
+        <div class="header">
+            <h1>NeuroLaserMap</h1>
+            <div style="display: flex; gap: 10px;">
+                <button class="success" onclick="exportToCSV()">💾 Exportar Dados</button>
                 <button onclick="showPatientForm()">+ Novo Paciente</button>
             </div>
-            
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-label">Total Pacientes</div>
-                    <div class="stat-value" id="stat-total-patients">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Sessões Realizadas</div>
-                    <div class="stat-value" id="stat-total-sessions">0</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Pacientes Recentes</h2>
-                <div id="patients-list">
-                    <p style="text-align: center; padding: 20px;">Nenhum paciente cadastrado.</p>
-                </div>
-            </div>
         </div>
 
-        <!-- FORMULÁRIO DE PACIENTE -->
-        <div id="patient-form-screen" class="hidden">
-            <div class="nav-bar">
-                <span class="back-btn" onclick="showDashboard()">← Voltar</span>
-                <h2>Cadastrar Paciente</h2>
-            </div>
-            <div class="card">
-                <input type="text" id="p-name" placeholder="Nome Completo">
-                <input type="date" id="p-birth" placeholder="Data de Nascimento">
-                <input type="tel" id="p-phone" placeholder="Telefone">
-                <textarea id="p-diagnosis" placeholder="Diagnóstico / Observações" rows="3"></textarea>
-                <button class="full" onclick="savePatient()">Salvar Paciente</button>
-            </div>
-        </div>
-
-        <!-- DETALHES DO PACIENTE -->
-        <div id="patient-detail-screen" class="hidden">
-            <div class="nav-bar">
-                <span class="back-btn" onclick="showDashboard()">← Voltar</span>
-                <h2 id="detail-name">Nome do Paciente</h2>
-            </div>
-            
-            <div class="card">
-                <h3>Nova Sessão</h3>
-                <input type="date" id="s-date">
-                <input type="number" id="s-duration" placeholder="Duração (minutos)">
-                <input type="text" id="s-points" placeholder="Pontos Estimulados (ex: F3, F4)">
-                <textarea id="s-obs" placeholder="Observações da sessão" rows="2"></textarea>
-                <button class="full success" onclick="saveSession()">Registrar Sessão</button>
+        <div class="container" style="padding-top: 0;">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">Pacientes Cadastrados</div>
+                    <div class="stat-value" id="stat-patients">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total de Sessões</div>
+                    <div class="stat-value" id="stat-sessions">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Sessões (Últimos 7 dias)</div>
+                    <div class="stat-value" id="stat-week">0</div>
+                </div>
             </div>
 
-            <div class="card">
-                <h3>Histórico de Sessões</h3>
-                <div id="sessions-list"></div>
+            <div class="dashboard-grid">
+                <!-- LISTA DE PACIENTES -->
+                <div class="card">
+                    <h2>Pacientes</h2>
+                    <input type="text" id="search-patient" placeholder="Buscar paciente..." onkeyup="filterPatients()">
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <table id="patients-table">
+                            <thead>
+                                <tr><th>Nome</th><th>Ações</th></tr>
+                            </thead>
+                            <tbody id="patients-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ÁREA DE DETALHES / FORMULÁRIOS -->
+                <div id="content-area">
+                    <div class="card" id="welcome-msg">
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                            <h2>Bem-vindo ao seu Painel</h2>
+                            <p>Selecione um paciente ao lado para ver o histórico ou registrar novas sessões.</p>
+                        </div>
+                    </div>
+
+                    <!-- FORMULÁRIO NOVO PACIENTE -->
+                    <div class="card hidden" id="patient-form">
+                        <h2>Cadastrar Novo Paciente</h2>
+                        <div class="form-group">
+                            <label>Nome Completo</label>
+                            <input type="text" id="p-name">
+                        </div>
+                        <div class="form-group">
+                            <label>Data de Nascimento</label>
+                            <input type="date" id="p-birth">
+                        </div>
+                        <div class="form-group">
+                            <label>Diagnóstico / Notas</label>
+                            <textarea id="p-notes" rows="4"></textarea>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="full" onclick="savePatient()">Salvar Paciente</button>
+                            <button class="full secondary" onclick="resetView()">Cancelar</button>
+                        </div>
+                    </div>
+
+                    <!-- PRONTUÁRIO DO PACIENTE -->
+                    <div class="hidden" id="patient-record">
+                        <div class="card">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h2 id="view-name">Nome do Paciente</h2>
+                                <button class="secondary" onclick="resetView()">Fechar</button>
+                            </div>
+                            <p id="view-notes" style="background: #F8FAFC; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary);"></p>
+                        </div>
+
+                        <div class="card">
+                            <h3>Registrar Nova Sessão</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div class="form-group">
+                                    <label>Data da Sessão</label>
+                                    <input type="date" id="s-date">
+                                </div>
+                                <div class="form-group">
+                                    <label>Duração (minutos)</label>
+                                    <input type="number" id="s-duration" value="30">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Pontos Estimulados (ex: F3, F4, T3)</label>
+                                <input type="text" id="s-points">
+                            </div>
+                            <div class="form-group">
+                                <label>Observações Clínicas</label>
+                                <textarea id="s-obs" rows="2"></textarea>
+                            </div>
+                            <button class="full success" onclick="saveSession()">Salvar Sessão</button>
+                        </div>
+
+                        <div class="card">
+                            <h3>Histórico de Atendimento</h3>
+                            <table id="sessions-table">
+                                <thead>
+                                    <tr><th>Data</th><th>Duração</th><th>Pontos</th><th>Notas</th></tr>
+                                </thead>
+                                <tbody id="sessions-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>Desenvolvido por: Carlos Charone</p>
-            <p>NeuroLaserMap - Sistema de Mapeamento de Neuromodulação</p>
+            <p><strong>NeuroLaserMap</strong> - Sistema Profissional de Mapeamento de Neuromodulação</p>
+            <p>Desenvolvido por Carlos Charone &copy; 2026</p>
         </div>
     </div>
 
     <script>
-        // BANCO DE DADOS LOCAL (LocalStorage)
         const DB = {
-            get: (key) => JSON.parse(localStorage.getItem('nlm_' + key) || '[]'),
-            save: (key, data) => localStorage.setItem('nlm_' + key, JSON.stringify(data))
+            get: (key) => JSON.parse(localStorage.getItem('nlm_v2_' + key) || '[]'),
+            save: (key, data) => localStorage.setItem('nlm_v2_' + key, JSON.stringify(data))
         };
 
-        let currentPatientId = null;
+        let currentId = null;
 
-        // INICIALIZAÇÃO
         window.onload = () => {
-            if (localStorage.getItem('nlm_auth') === 'true') {
-                showDashboard();
+            if (localStorage.getItem('nlm_auth_v2') === 'true') {
+                showMain();
             } else {
                 document.getElementById('auth-screen').classList.remove('hidden');
             }
         };
 
-        // AUTORIZAÇÃO
         function handleAuth() {
-            const name = document.getElementById('auth-name').value;
-            if (name.toLowerCase() === 'charone2026') {
-                localStorage.setItem('nlm_auth', 'true');
-                showDashboard();
-            } else {
-                alert('Código de acesso incorreto.');
-            }
+            if (document.getElementById('auth-code').value === 'charone2026') {
+                localStorage.setItem('nlm_auth_v2', 'true');
+                showMain();
+            } else { alert('Código inválido'); }
         }
 
-        // NAVEGAÇÃO
-        function hideAll() {
-            ['auth-screen', 'dashboard-screen', 'patient-form-screen', 'patient-detail-screen'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-            });
+        function showMain() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-panel').classList.remove('hidden');
+            updateStats();
+            renderPatients();
         }
 
-        function showDashboard() {
-            hideAll();
-            document.getElementById('dashboard-screen').classList.remove('hidden');
-            renderDashboard();
+        function updateStats() {
+            const p = DB.get('patients');
+            const s = DB.get('sessions');
+            document.getElementById('stat-patients').innerText = p.length;
+            document.getElementById('stat-sessions').innerText = s.length;
+            
+            const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+            const weekCount = s.filter(x => new Date(x.date) >= weekAgo).length;
+            document.getElementById('stat-week').innerText = weekCount;
+        }
+
+        function renderPatients() {
+            const p = DB.get('patients');
+            const body = document.getElementById('patients-body');
+            body.innerHTML = p.map(x => `
+                <tr onclick="viewPatient('${x.id}')">
+                    <td><strong>${x.name}</strong></td>
+                    <td><button class="secondary" style="padding: 4px 8px; font-size: 11px;">Ver Prontuário</button></td>
+                </tr>
+            `).join('');
         }
 
         function showPatientForm() {
-            hideAll();
-            document.getElementById('patient-form-screen').classList.remove('hidden');
-        }
-
-        function showPatientDetail(id) {
-            hideAll();
-            currentPatientId = id;
-            const patient = DB.get('patients').find(p => p.id === id);
-            document.getElementById('detail-name').innerText = patient.name;
-            document.getElementById('patient-detail-screen').classList.remove('hidden');
-            document.getElementById('s-date').valueAsDate = new Date();
-            renderSessions();
-        }
-
-        // LÓGICA DE DADOS
-        function renderDashboard() {
-            const patients = DB.get('patients');
-            const sessions = DB.get('sessions');
-            
-            document.getElementById('stat-total-patients').innerText = patients.length;
-            document.getElementById('stat-total-sessions').innerText = sessions.length;
-
-            const list = document.getElementById('patients-list');
-            if (patients.length === 0) {
-                list.innerHTML = '<p style="text-align: center; padding: 20px;">Nenhum paciente cadastrado.</p>';
-                return;
-            }
-
-            list.innerHTML = patients.map(p => `
-                <div class="list-item" onclick="showPatientDetail('${p.id}')" style="cursor:pointer">
-                    <div class="list-info">
-                        <h3>${p.name}</h3>
-                        <p>${p.diagnosis || 'Sem diagnóstico'}</p>
-                    </div>
-                    <span style="color: var(--primary)">Ver ➔</span>
-                </div>
-            `).join('');
+            resetView();
+            document.getElementById('welcome-msg').classList.add('hidden');
+            document.getElementById('patient-form').classList.remove('hidden');
         }
 
         function savePatient() {
             const name = document.getElementById('p-name').value;
-            if (!name) return alert('Nome é obrigatório');
-
-            const patients = DB.get('patients');
-            const newPatient = {
+            if (!name) return alert('Nome obrigatório');
+            const p = DB.get('patients');
+            const newP = {
                 id: Date.now().toString(),
                 name: name,
                 birth: document.getElementById('p-birth').value,
-                phone: document.getElementById('p-phone').value,
-                diagnosis: document.getElementById('p-diagnosis').value,
-                createdAt: new Date().toISOString()
+                notes: document.getElementById('p-notes').value
             };
+            p.unshift(newP);
+            DB.save('patients', p);
+            resetView();
+            renderPatients();
+            updateStats();
+        }
 
-            patients.unshift(newPatient);
-            DB.save('patients', patients);
-            showDashboard();
+        function viewPatient(id) {
+            currentId = id;
+            const p = DB.get('patients').find(x => x.id === id);
+            document.getElementById('welcome-msg').classList.add('hidden');
+            document.getElementById('patient-form').classList.add('hidden');
+            document.getElementById('patient-record').classList.remove('hidden');
+            document.getElementById('view-name').innerText = p.name;
+            document.getElementById('view-notes').innerText = p.notes || 'Sem observações cadastradas.';
+            document.getElementById('s-date').valueAsDate = new Date();
+            renderSessions();
         }
 
         function renderSessions() {
-            const sessions = DB.get('sessions').filter(s => s.patientId === currentPatientId);
-            const list = document.getElementById('sessions-list');
-            
-            if (sessions.length === 0) {
-                list.innerHTML = '<p style="text-align: center; padding: 10px;">Nenhuma sessão registrada.</p>';
-                return;
-            }
-
-            list.innerHTML = sessions.map(s => `
-                <div class="list-item">
-                    <div class="list-info">
-                        <h3>Data: ${new Date(s.date).toLocaleDateString()}</h3>
-                        <p>Pontos: ${s.points} | Duração: ${s.duration}min</p>
-                        <p style="font-style: italic">${s.obs || ''}</p>
-                    </div>
-                </div>
+            const s = DB.get('sessions').filter(x => x.pId === currentId);
+            const body = document.getElementById('sessions-body');
+            body.innerHTML = s.map(x => `
+                <tr>
+                    <td>${new Date(x.date).toLocaleDateString()}</td>
+                    <td>${x.dur} min</td>
+                    <td>${x.pts}</td>
+                    <td>${x.obs}</td>
+                </tr>
             `).join('');
         }
 
         function saveSession() {
-            const date = document.getElementById('s-date').value;
-            const duration = document.getElementById('s-duration').value;
-            if (!date || !duration) return alert('Data e duração são obrigatórias');
-
-            const sessions = DB.get('sessions');
-            const newSession = {
-                id: Date.now().toString(),
-                patientId: currentPatientId,
-                date: date,
-                duration: duration,
-                points: document.getElementById('s-points').value,
+            const s = DB.get('sessions');
+            const newS = {
+                pId: currentId,
+                date: document.getElementById('s-date').value,
+                dur: document.getElementById('s-duration').value,
+                pts: document.getElementById('s-points').value,
                 obs: document.getElementById('s-obs').value
             };
-
-            sessions.unshift(newSession);
-            DB.save('sessions', sessions);
-            
-            // Limpar campos
-            document.getElementById('s-duration').value = '';
-            document.getElementById('s-points').value = '';
-            document.getElementById('s-obs').value = '';
-            
+            s.unshift(newS);
+            DB.save('sessions', s);
             renderSessions();
-            alert('Sessão registrada!');
+            updateStats();
+            alert('Sessão salva!');
+        }
+
+        function resetView() {
+            document.getElementById('patient-form').classList.add('hidden');
+            document.getElementById('patient-record').classList.add('hidden');
+            document.getElementById('welcome-msg').classList.remove('hidden');
+        }
+
+        function exportToCSV() {
+            const p = DB.get('patients');
+            const s = DB.get('sessions');
+            let csv = "Paciente,Data Sessao,Duracao,Pontos,Notas\n";
+            s.forEach(x => {
+                const name = p.find(y => y.id === x.pId)?.name || 'Desconhecido';
+                csv += `${name},${x.date},${x.dur},${x.pts},${x.obs}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'NeuroLaserMap_Dados.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function filterPatients() {
+            const val = document.getElementById('search-patient').value.toLowerCase();
+            const rows = document.getElementById('patients-body').getElementsByTagName('tr');
+            for (let row of rows) {
+                row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+            }
         }
     </script>
 </body>
