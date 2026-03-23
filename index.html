@@ -11,6 +11,7 @@
             --primary: #0066CC;
             --success: #10B981;
             --warning: #F59E0B;
+            --danger: #EF4444;
             --bg: #F5F7FA;
             --text: #1A1A1A;
             --muted: #6B7280;
@@ -26,30 +27,24 @@
             box-sizing: border-box;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
         }
         .card {
             background: var(--white);
-            padding: 25px;
+            padding: 20px;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-bottom: 20px;
         }
-        .auth-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
         .hidden { display: none !important; }
         h1 { color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
-        h2 { font-size: 18px; margin: 0 0 15px 0; }
+        h2 { font-size: 18px; margin: 20px 0 15px 0; }
         p { color: var(--muted); font-size: 14px; line-height: 1.5; }
         
         /* Form Styles */
-        input {
+        input, select, textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
@@ -59,17 +54,19 @@
             font-size: 16px;
         }
         button {
-            width: 100%;
-            padding: 14px;
+            padding: 12px 20px;
             background-color: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: opacity 0.2s;
         }
+        button.full { width: 100%; padding: 14px; font-size: 16px; }
+        button.secondary { background-color: #6B7280; }
+        button.success { background-color: var(--success); }
         button:active { opacity: 0.8; }
 
         /* Dashboard Styles */
@@ -84,176 +81,268 @@
             padding: 15px;
             border-radius: 12px;
             border: 1px solid var(--border);
-            text-align: left;
         }
         .stat-value { font-size: 24px; font-weight: bold; margin: 5px 0; }
         .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
         
-        .action-button {
+        /* List Styles */
+        .list-item {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            background: var(--primary);
-            color: white;
-            padding: 16px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 12px;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
         }
-        .action-button.secondary {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-            border: 1px solid var(--success);
+        .list-item:last-child { border-bottom: none; }
+        .list-info h3 { margin: 0; font-size: 16px; }
+        .list-info p { margin: 5px 0 0 0; font-size: 12px; }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        
+        .back-btn { color: var(--primary); text-decoration: none; font-weight: bold; cursor: pointer; }
+
         .footer {
             margin-top: 40px;
-            padding-top: 20px;
+            padding: 20px;
             border-top: 1px solid var(--border);
             text-align: center;
             font-size: 11px;
             color: var(--muted);
         }
-        .dev-tag {
-            background: var(--bg);
-            padding: 10px;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
-            text-align: left;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: var(--primary);
-            text-transform: uppercase;
-        }
     </style>
 </head>
 <body>
-    <!-- TELA DE AUTORIZAÇÃO -->
-    <div id="auth-screen" class="auth-screen">
-        <div class="card" style="text-align: center; width: 100%; max-width: 400px;">
-            <h1>NeuroLaserMap</h1>
-            <p id="auth-desc">Solicite acesso para utilizar o sistema de mapeamento de neuromodulação.</p>
+    <div class="container">
+        <!-- TELA DE AUTORIZAÇÃO -->
+        <div id="auth-screen" class="hidden">
+            <div class="card" style="text-align: center; max-width: 400px; margin: 100px auto;">
+                <h1>NeuroLaserMap</h1>
+                <p>Solicite acesso para utilizar o sistema.</p>
+                <input type="text" id="auth-name" placeholder="Nome Completo">
+                <button class="full" onclick="handleAuth()">Entrar</button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard-screen" class="hidden">
+            <div class="nav-bar">
+                <h1>NeuroLaserMap</h1>
+                <button onclick="showPatientForm()">+ Novo Paciente</button>
+            </div>
             
-            <div id="form-container">
-                <input type="text" id="name" placeholder="Nome Completo" required>
-                <input type="email" id="email" placeholder="E-mail" required>
-                <input type="tel" id="phone" placeholder="Telefone / WhatsApp" required>
-                <button onclick="handleRequest()">Solicitar Acesso</button>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Total Pacientes</div>
+                    <div class="stat-value" id="stat-total-patients">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Sessões Realizadas</div>
+                    <div class="stat-value" id="stat-total-sessions">0</div>
+                </div>
             </div>
 
-            <div id="pending-container" class="hidden">
-                <div style="font-size: 40px; margin-bottom: 15px;">⏳</div>
-                <h2>Aguardando Aprovação</h2>
-                <p>Sua solicitação foi enviada. O administrador irá analisar seu acesso em breve.</p>
-                <button onclick="location.reload()" style="background-color: #6B7280;">Verificar Status</button>
-            </div>
-
-            <div id="authorized-container" class="hidden">
-                <div style="font-size: 40px; margin-bottom: 15px;">✅</div>
-                <h2>Acesso Liberado!</h2>
-                <p>Bem-vindo ao NeuroLaserMap!</p>
-                <button onclick="showDashboard()">Entrar no Sistema</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- DASHBOARD DO SISTEMA -->
-    <div id="dashboard-screen" class="container hidden">
-        <div style="margin-bottom: 30px;">
-            <h1>NeuroLaserMap</h1>
-            <p>Bem-vindo ao sistema de mapeamento de neuromodulação</p>
-        </div>
-
-        <h2>Estatísticas</h2>
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div style="color: var(--primary); font-size: 20px;">👥</div>
-                <div class="stat-value">12</div>
-                <div class="stat-label">Total Pacientes</div>
-            </div>
-            <div class="stat-box">
-                <div style="color: var(--success); font-size: 20px;">🟢</div>
-                <div class="stat-value">8</div>
-                <div class="stat-label">Ativos</div>
-            </div>
-            <div class="stat-box">
-                <div style="color: var(--warning); font-size: 20px;">📅</div>
-                <div class="stat-value">3</div>
-                <div class="stat-label">Sessões Hoje</div>
-            </div>
-            <div class="stat-box">
-                <div style="color: var(--primary); font-size: 20px;">📊</div>
-                <div class="stat-value">15</div>
-                <div class="stat-label">Esta Semana</div>
+            <div class="card">
+                <h2>Pacientes Recentes</h2>
+                <div id="patients-list">
+                    <p style="text-align: center; padding: 20px;">Nenhum paciente cadastrado.</p>
+                </div>
             </div>
         </div>
 
-        <h2>Ações Rápidas</h2>
-        <a href="#" class="action-button" onclick="alert('Abrindo lista de pacientes...')">
-            <span style="flex: 1;">Ver Todos os Pacientes</span>
-            <span>➔</span>
-        </a>
-        <a href="#" class="action-button secondary" onclick="alert('Gerando Excel...')">
-            <span style="font-size: 20px; margin-right: 10px;">📄</span>
-            <span style="flex: 1;">Exportar Dados (Excel)</span>
-            <span>➔</span>
-        </a>
+        <!-- FORMULÁRIO DE PACIENTE -->
+        <div id="patient-form-screen" class="hidden">
+            <div class="nav-bar">
+                <span class="back-btn" onclick="showDashboard()">← Voltar</span>
+                <h2>Cadastrar Paciente</h2>
+            </div>
+            <div class="card">
+                <input type="text" id="p-name" placeholder="Nome Completo">
+                <input type="date" id="p-birth" placeholder="Data de Nascimento">
+                <input type="tel" id="p-phone" placeholder="Telefone">
+                <textarea id="p-diagnosis" placeholder="Diagnóstico / Observações" rows="3"></textarea>
+                <button class="full" onclick="savePatient()">Salvar Paciente</button>
+            </div>
+        </div>
+
+        <!-- DETALHES DO PACIENTE -->
+        <div id="patient-detail-screen" class="hidden">
+            <div class="nav-bar">
+                <span class="back-btn" onclick="showDashboard()">← Voltar</span>
+                <h2 id="detail-name">Nome do Paciente</h2>
+            </div>
+            
+            <div class="card">
+                <h3>Nova Sessão</h3>
+                <input type="date" id="s-date">
+                <input type="number" id="s-duration" placeholder="Duração (minutos)">
+                <input type="text" id="s-points" placeholder="Pontos Estimulados (ex: F3, F4)">
+                <textarea id="s-obs" placeholder="Observações da sessão" rows="2"></textarea>
+                <button class="full success" onclick="saveSession()">Registrar Sessão</button>
+            </div>
+
+            <div class="card">
+                <h3>Histórico de Sessões</h3>
+                <div id="sessions-list"></div>
+            </div>
+        </div>
 
         <div class="footer">
-            <div class="dev-tag">Desenvolvido por: Carlos Charone</div>
+            <p>Desenvolvido por: Carlos Charone</p>
             <p>NeuroLaserMap - Sistema de Mapeamento de Neuromodulação</p>
         </div>
     </div>
 
     <script>
-        const AUTH_KEY = 'neurolasermap_auth';
-        
+        // BANCO DE DADOS LOCAL (LocalStorage)
+        const DB = {
+            get: (key) => JSON.parse(localStorage.getItem('nlm_' + key) || '[]'),
+            save: (key, data) => localStorage.setItem('nlm_' + key, JSON.stringify(data))
+        };
+
+        let currentPatientId = null;
+
+        // INICIALIZAÇÃO
         window.onload = () => {
-            const status = localStorage.getItem(AUTH_KEY);
-            if (status === 'authorized') {
+            if (localStorage.getItem('nlm_auth') === 'true') {
                 showDashboard();
             } else {
-                updateAuthUI(status);
+                document.getElementById('auth-screen').classList.remove('hidden');
             }
         };
 
-        function updateAuthUI(status) {
-            document.getElementById('form-container').classList.add('hidden');
-            document.getElementById('pending-container').classList.add('hidden');
-            document.getElementById('authorized-container').classList.add('hidden');
-
-            if (status === 'authorized') {
-                document.getElementById('authorized-container').classList.remove('hidden');
-            } else if (status === 'pending') {
-                document.getElementById('pending-container').classList.remove('hidden');
+        // AUTORIZAÇÃO
+        function handleAuth() {
+            const name = document.getElementById('auth-name').value;
+            if (name.toLowerCase() === 'charone2026') {
+                localStorage.setItem('nlm_auth', 'true');
+                showDashboard();
             } else {
-                document.getElementById('form-container').classList.remove('hidden');
+                alert('Código de acesso incorreto.');
             }
         }
 
-        function handleRequest() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-
-            if (!name) { alert('Por favor, preencha seu nome.'); return; }
-
-            if (name.toLowerCase() === 'charone2026') {
-                localStorage.setItem(AUTH_KEY, 'authorized');
-                updateAuthUI('authorized');
-                return;
-            }
-
-            if (!email || !phone) { alert('Por favor, preencha todos os campos.'); return; }
-
-            localStorage.setItem(AUTH_KEY, 'pending');
-            updateAuthUI('pending');
-            alert('Solicitação enviada com sucesso!');
+        // NAVEGAÇÃO
+        function hideAll() {
+            ['auth-screen', 'dashboard-screen', 'patient-form-screen', 'patient-detail-screen'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
         }
 
         function showDashboard() {
-            document.getElementById('auth-screen').classList.add('hidden');
+            hideAll();
             document.getElementById('dashboard-screen').classList.remove('hidden');
+            renderDashboard();
+        }
+
+        function showPatientForm() {
+            hideAll();
+            document.getElementById('patient-form-screen').classList.remove('hidden');
+        }
+
+        function showPatientDetail(id) {
+            hideAll();
+            currentPatientId = id;
+            const patient = DB.get('patients').find(p => p.id === id);
+            document.getElementById('detail-name').innerText = patient.name;
+            document.getElementById('patient-detail-screen').classList.remove('hidden');
+            document.getElementById('s-date').valueAsDate = new Date();
+            renderSessions();
+        }
+
+        // LÓGICA DE DADOS
+        function renderDashboard() {
+            const patients = DB.get('patients');
+            const sessions = DB.get('sessions');
+            
+            document.getElementById('stat-total-patients').innerText = patients.length;
+            document.getElementById('stat-total-sessions').innerText = sessions.length;
+
+            const list = document.getElementById('patients-list');
+            if (patients.length === 0) {
+                list.innerHTML = '<p style="text-align: center; padding: 20px;">Nenhum paciente cadastrado.</p>';
+                return;
+            }
+
+            list.innerHTML = patients.map(p => `
+                <div class="list-item" onclick="showPatientDetail('${p.id}')" style="cursor:pointer">
+                    <div class="list-info">
+                        <h3>${p.name}</h3>
+                        <p>${p.diagnosis || 'Sem diagnóstico'}</p>
+                    </div>
+                    <span style="color: var(--primary)">Ver ➔</span>
+                </div>
+            `).join('');
+        }
+
+        function savePatient() {
+            const name = document.getElementById('p-name').value;
+            if (!name) return alert('Nome é obrigatório');
+
+            const patients = DB.get('patients');
+            const newPatient = {
+                id: Date.now().toString(),
+                name: name,
+                birth: document.getElementById('p-birth').value,
+                phone: document.getElementById('p-phone').value,
+                diagnosis: document.getElementById('p-diagnosis').value,
+                createdAt: new Date().toISOString()
+            };
+
+            patients.unshift(newPatient);
+            DB.save('patients', patients);
+            showDashboard();
+        }
+
+        function renderSessions() {
+            const sessions = DB.get('sessions').filter(s => s.patientId === currentPatientId);
+            const list = document.getElementById('sessions-list');
+            
+            if (sessions.length === 0) {
+                list.innerHTML = '<p style="text-align: center; padding: 10px;">Nenhuma sessão registrada.</p>';
+                return;
+            }
+
+            list.innerHTML = sessions.map(s => `
+                <div class="list-item">
+                    <div class="list-info">
+                        <h3>Data: ${new Date(s.date).toLocaleDateString()}</h3>
+                        <p>Pontos: ${s.points} | Duração: ${s.duration}min</p>
+                        <p style="font-style: italic">${s.obs || ''}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveSession() {
+            const date = document.getElementById('s-date').value;
+            const duration = document.getElementById('s-duration').value;
+            if (!date || !duration) return alert('Data e duração são obrigatórias');
+
+            const sessions = DB.get('sessions');
+            const newSession = {
+                id: Date.now().toString(),
+                patientId: currentPatientId,
+                date: date,
+                duration: duration,
+                points: document.getElementById('s-points').value,
+                obs: document.getElementById('s-obs').value
+            };
+
+            sessions.unshift(newSession);
+            DB.save('sessions', sessions);
+            
+            // Limpar campos
+            document.getElementById('s-duration').value = '';
+            document.getElementById('s-points').value = '';
+            document.getElementById('s-obs').value = '';
+            
+            renderSessions();
+            alert('Sessão registrada!');
         }
     </script>
 </body>
