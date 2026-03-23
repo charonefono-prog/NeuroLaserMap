@@ -3,45 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroLaserMap - Acesso</title>
+    <title>NeuroLaserMap - Sistema de Mapeamento</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0066CC">
     <style>
         :root {
             --primary: #0066CC;
+            --success: #10B981;
+            --warning: #F59E0B;
             --bg: #F5F7FA;
             --text: #1A1A1A;
             --muted: #6B7280;
             --white: #FFFFFF;
+            --border: #E5E7EB;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .auth-screen {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
         }
-        .card {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        h1 { margin-bottom: 10px; color: var(--primary); font-size: 24px; }
-        p { color: var(--muted); margin-bottom: 25px; font-size: 14px; line-height: 1.5; }
+        .hidden { display: none !important; }
+        h1 { color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
+        h2 { font-size: 18px; margin: 0 0 15px 0; }
+        p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+        
+        /* Form Styles */
         input {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
-            border: 1px solid #E5E7EB;
+            border: 1px solid var(--border);
             border-radius: 8px;
             box-sizing: border-box;
             font-size: 16px;
@@ -59,47 +71,153 @@
             transition: opacity 0.2s;
         }
         button:active { opacity: 0.8; }
-        .hidden { display: none; }
-        #status-msg { margin-top: 20px; font-weight: 500; }
+
+        /* Dashboard Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .stat-box {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .stat-value { font-size: 24px; font-weight: bold; margin: 5px 0; }
+        .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+        
+        .action-button {
+            display: flex;
+            align-items: center;
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .action-button.secondary {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .dev-tag {
+            background: var(--bg);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            text-align: left;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
-    <div class="card" id="auth-card">
-        <h1>NeuroLaserMap</h1>
-        <p>Solicite acesso para utilizar o sistema de mapeamento de neuromodulação.</p>
-        
-        <div id="form-container">
-            <input type="text" id="name" placeholder="Nome Completo" required>
-            <input type="email" id="email" placeholder="E-mail" required>
-            <input type="tel" id="phone" placeholder="Telefone / WhatsApp" required>
-            <button onclick="handleRequest()">Solicitar Acesso</button>
+    <!-- TELA DE AUTORIZAÇÃO -->
+    <div id="auth-screen" class="auth-screen">
+        <div class="card" style="text-align: center; width: 100%; max-width: 400px;">
+            <h1>NeuroLaserMap</h1>
+            <p id="auth-desc">Solicite acesso para utilizar o sistema de mapeamento de neuromodulação.</p>
+            
+            <div id="form-container">
+                <input type="text" id="name" placeholder="Nome Completo" required>
+                <input type="email" id="email" placeholder="E-mail" required>
+                <input type="tel" id="phone" placeholder="Telefone / WhatsApp" required>
+                <button onclick="handleRequest()">Solicitar Acesso</button>
+            </div>
+
+            <div id="pending-container" class="hidden">
+                <div style="font-size: 40px; margin-bottom: 15px;">⏳</div>
+                <h2>Aguardando Aprovação</h2>
+                <p>Sua solicitação foi enviada. O administrador irá analisar seu acesso em breve.</p>
+                <button onclick="location.reload()" style="background-color: #6B7280;">Verificar Status</button>
+            </div>
+
+            <div id="authorized-container" class="hidden">
+                <div style="font-size: 40px; margin-bottom: 15px;">✅</div>
+                <h2>Acesso Liberado!</h2>
+                <p>Bem-vindo ao NeuroLaserMap!</p>
+                <button onclick="showDashboard()">Entrar no Sistema</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD DO SISTEMA -->
+    <div id="dashboard-screen" class="container hidden">
+        <div style="margin-bottom: 30px;">
+            <h1>NeuroLaserMap</h1>
+            <p>Bem-vindo ao sistema de mapeamento de neuromodulação</p>
         </div>
 
-        <div id="pending-container" class="hidden">
-            <div style="font-size: 40px; margin-bottom: 15px;">⏳</div>
-            <h2 style="font-size: 18px;">Aguardando Aprovação</h2>
-            <p>Sua solicitação foi enviada. O administrador irá analisar seu acesso em breve.</p>
-            <button onclick="checkStatus()" style="background-color: #6B7280;">Verificar Status</button>
+        <h2>Estatísticas</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div style="color: var(--primary); font-size: 20px;">👥</div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Total Pacientes</div>
+            </div>
+            <div class="stat-box">
+                <div style="color: var(--success); font-size: 20px;">🟢</div>
+                <div class="stat-value">8</div>
+                <div class="stat-label">Ativos</div>
+            </div>
+            <div class="stat-box">
+                <div style="color: var(--warning); font-size: 20px;">📅</div>
+                <div class="stat-value">3</div>
+                <div class="stat-label">Sessões Hoje</div>
+            </div>
+            <div class="stat-box">
+                <div style="color: var(--primary); font-size: 20px;">📊</div>
+                <div class="stat-value">15</div>
+                <div class="stat-label">Esta Semana</div>
+            </div>
         </div>
 
-        <div id="authorized-container" class="hidden">
-            <div style="font-size: 40px; margin-bottom: 15px;">✅</div>
-            <h2 style="font-size: 18px;">Acesso Liberado!</h2>
-            <p>Você já pode utilizar o sistema NeuroLaserMap.</p>
-            <button onclick="enterApp()">Entrar no Sistema</button>
+        <h2>Ações Rápidas</h2>
+        <a href="#" class="action-button" onclick="alert('Abrindo lista de pacientes...')">
+            <span style="flex: 1;">Ver Todos os Pacientes</span>
+            <span>➔</span>
+        </a>
+        <a href="#" class="action-button secondary" onclick="alert('Gerando Excel...')">
+            <span style="font-size: 20px; margin-right: 10px;">📄</span>
+            <span style="flex: 1;">Exportar Dados (Excel)</span>
+            <span>➔</span>
+        </a>
+
+        <div class="footer">
+            <div class="dev-tag">Desenvolvido por: Carlos Charone</div>
+            <p>NeuroLaserMap - Sistema de Mapeamento de Neuromodulação</p>
         </div>
     </div>
 
     <script>
         const AUTH_KEY = 'neurolasermap_auth';
         
-        // Verificar status ao carregar
         window.onload = () => {
             const status = localStorage.getItem(AUTH_KEY);
-            updateUI(status);
+            if (status === 'authorized') {
+                showDashboard();
+            } else {
+                updateAuthUI(status);
+            }
         };
 
-        function updateUI(status) {
+        function updateAuthUI(status) {
             document.getElementById('form-container').classList.add('hidden');
             document.getElementById('pending-container').classList.add('hidden');
             document.getElementById('authorized-container').classList.add('hidden');
@@ -118,31 +236,24 @@
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
 
-            if (!name || !email || !phone) {
-                alert('Por favor, preencha todos os campos.');
-                return;
-            }
+            if (!name) { alert('Por favor, preencha seu nome.'); return; }
 
-            // Código mestre para o dono
             if (name.toLowerCase() === 'charone2026') {
                 localStorage.setItem(AUTH_KEY, 'authorized');
-                updateUI('authorized');
+                updateAuthUI('authorized');
                 return;
             }
 
-            // Simular envio
+            if (!email || !phone) { alert('Por favor, preencha todos os campos.'); return; }
+
             localStorage.setItem(AUTH_KEY, 'pending');
-            localStorage.setItem('user_data', JSON.stringify({name, email, phone}));
-            updateUI('pending');
+            updateAuthUI('pending');
             alert('Solicitação enviada com sucesso!');
         }
 
-        function checkStatus() {
-            alert('Sua solicitação ainda está em análise.');
-        }
-
-        function enterApp() {
-            alert('Bem-vindo ao NeuroLaserMap!');
+        function showDashboard() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.remove('hidden');
         }
     </script>
 </body>
