@@ -43,19 +43,18 @@
         h2 { font-size: 20px; margin: 0 0 20px 0; color: #334155; }
         h3 { font-size: 16px; margin: 0 0 15px 0; color: #475569; }
         
-        /* Layout Grid para Desktop */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 24px;
         }
 
-        /* Form Styles */
         .form-group { margin-bottom: 16px; }
         label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: #475569; }
         input, select, textarea {
             width: 100%;
             padding: 10px 12px;
+            margin-bottom: 12px;
             border: 1px solid var(--border);
             border-radius: 6px;
             box-sizing: border-box;
@@ -80,7 +79,6 @@
         button.secondary { background-color: #94A3B8; }
         button:hover { opacity: 0.9; }
 
-        /* Stats */
         .stats-row {
             display: flex;
             gap: 16px;
@@ -97,13 +95,11 @@
         .stat-value { font-size: 32px; font-weight: 800; color: var(--primary); }
         .stat-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Table Styles */
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 13px; }
         td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
         tr:hover { background-color: #F8FAFC; cursor: pointer; }
 
-        /* Navigation */
         .header {
             display: flex;
             justify-content: space-between;
@@ -114,6 +110,73 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .invite-section {
+            background: #F8FAFC;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #F8FAFC;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+        .user-name { font-weight: 600; margin: 0; }
+        .user-email { font-size: 12px; color: var(--muted); margin: 3px 0 0 0; }
+        .user-role { font-size: 12px; color: var(--muted); }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+        }
+
         .footer {
             margin-top: 60px;
             text-align: center;
@@ -121,10 +184,23 @@
             color: var(--muted);
             padding-bottom: 40px;
         }
+
+        .url-box {
+            background: #F8FAFC;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .url-text { font-weight: 600; }
+        .copy-btn { background: none; border: none; cursor: pointer; font-size: 18px; }
     </style>
 </head>
 <body>
-    <!-- TELA DE LOGIN (DESKTOP) -->
+    <!-- TELA DE LOGIN -->
     <div id="auth-screen" class="hidden">
         <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
             <div class="card" style="width: 400px; text-align: center; padding: 40px;">
@@ -136,121 +212,152 @@
         </div>
     </div>
 
-    <!-- PAINEL PRINCIPAL (DESKTOP) -->
+    <!-- PAINEL PRINCIPAL -->
     <div id="main-panel" class="hidden">
         <div class="header">
             <h1>NeuroLaserMap</h1>
             <div style="display: flex; gap: 10px;">
                 <button class="success" onclick="exportToCSV()">💾 Exportar Dados</button>
-                <button onclick="showPatientForm()">+ Novo Paciente</button>
+                <button onclick="showTab('dashboard')">Painel</button>
+                <button onclick="showTab('settings')">⚙️ Configurações</button>
             </div>
         </div>
 
         <div class="container" style="padding-top: 0;">
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-label">Pacientes Cadastrados</div>
-                    <div class="stat-value" id="stat-patients">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total de Sessões</div>
-                    <div class="stat-value" id="stat-sessions">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Sessões (Últimos 7 dias)</div>
-                    <div class="stat-value" id="stat-week">0</div>
-                </div>
-            </div>
-
-            <div class="dashboard-grid">
-                <!-- LISTA DE PACIENTES -->
-                <div class="card">
-                    <h2>Pacientes</h2>
-                    <input type="text" id="search-patient" placeholder="Buscar paciente..." onkeyup="filterPatients()">
-                    <div style="max-height: 500px; overflow-y: auto;">
-                        <table id="patients-table">
-                            <thead>
-                                <tr><th>Nome</th><th>Ações</th></tr>
-                            </thead>
-                            <tbody id="patients-body"></tbody>
-                        </table>
+            <!-- DASHBOARD TAB -->
+            <div id="dashboard-tab" class="hidden">
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-label">Pacientes Cadastrados</div>
+                        <div class="stat-value" id="stat-patients">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total de Sessões</div>
+                        <div class="stat-value" id="stat-sessions">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Usuários Convidados</div>
+                        <div class="stat-value" id="stat-users">0</div>
                     </div>
                 </div>
 
-                <!-- ÁREA DE DETALHES / FORMULÁRIOS -->
-                <div id="content-area">
-                    <div class="card" id="welcome-msg">
-                        <div style="text-align: center; padding: 60px 20px;">
-                            <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
-                            <h2>Bem-vindo ao seu Painel</h2>
-                            <p>Selecione um paciente ao lado para ver o histórico ou registrar novas sessões.</p>
-                        </div>
-                    </div>
-
-                    <!-- FORMULÁRIO NOVO PACIENTE -->
-                    <div class="card hidden" id="patient-form">
-                        <h2>Cadastrar Novo Paciente</h2>
-                        <div class="form-group">
-                            <label>Nome Completo</label>
-                            <input type="text" id="p-name">
-                        </div>
-                        <div class="form-group">
-                            <label>Data de Nascimento</label>
-                            <input type="date" id="p-birth">
-                        </div>
-                        <div class="form-group">
-                            <label>Diagnóstico / Notas</label>
-                            <textarea id="p-notes" rows="4"></textarea>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="full" onclick="savePatient()">Salvar Paciente</button>
-                            <button class="full secondary" onclick="resetView()">Cancelar</button>
-                        </div>
-                    </div>
-
-                    <!-- PRONTUÁRIO DO PACIENTE -->
-                    <div class="hidden" id="patient-record">
-                        <div class="card">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h2 id="view-name">Nome do Paciente</h2>
-                                <button class="secondary" onclick="resetView()">Fechar</button>
-                            </div>
-                            <p id="view-notes" style="background: #F8FAFC; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary);"></p>
-                        </div>
-
-                        <div class="card">
-                            <h3>Registrar Nova Sessão</h3>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                <div class="form-group">
-                                    <label>Data da Sessão</label>
-                                    <input type="date" id="s-date">
-                                </div>
-                                <div class="form-group">
-                                    <label>Duração (minutos)</label>
-                                    <input type="number" id="s-duration" value="30">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Pontos Estimulados (ex: F3, F4, T3)</label>
-                                <input type="text" id="s-points">
-                            </div>
-                            <div class="form-group">
-                                <label>Observações Clínicas</label>
-                                <textarea id="s-obs" rows="2"></textarea>
-                            </div>
-                            <button class="full success" onclick="saveSession()">Salvar Sessão</button>
-                        </div>
-
-                        <div class="card">
-                            <h3>Histórico de Atendimento</h3>
-                            <table id="sessions-table">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h2>Pacientes</h2>
+                        <input type="text" id="search-patient" placeholder="Buscar paciente..." onkeyup="filterPatients()">
+                        <div style="max-height: 500px; overflow-y: auto;">
+                            <table id="patients-table">
                                 <thead>
-                                    <tr><th>Data</th><th>Duração</th><th>Pontos</th><th>Notas</th></tr>
+                                    <tr><th>Nome</th><th>Ações</th></tr>
                                 </thead>
-                                <tbody id="sessions-body"></tbody>
+                                <tbody id="patients-body"></tbody>
                             </table>
                         </div>
                     </div>
+
+                    <div id="content-area">
+                        <div class="card" id="welcome-msg">
+                            <div style="text-align: center; padding: 60px 20px;">
+                                <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                                <h2>Bem-vindo ao seu Painel</h2>
+                                <p>Selecione um paciente ao lado para ver o histórico ou registrar novas sessões.</p>
+                            </div>
+                        </div>
+
+                        <div class="card hidden" id="patient-form">
+                            <h2>Cadastrar Novo Paciente</h2>
+                            <div class="form-group">
+                                <label>Nome Completo</label>
+                                <input type="text" id="p-name">
+                            </div>
+                            <div class="form-group">
+                                <label>Data de Nascimento</label>
+                                <input type="date" id="p-birth">
+                            </div>
+                            <div class="form-group">
+                                <label>Diagnóstico / Notas</label>
+                                <textarea id="p-notes" rows="4"></textarea>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="full" onclick="savePatient()">Salvar Paciente</button>
+                                <button class="full secondary" onclick="resetView()">Cancelar</button>
+                            </div>
+                        </div>
+
+                        <div class="hidden" id="patient-record">
+                            <div class="card">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h2 id="view-name">Nome do Paciente</h2>
+                                    <button class="secondary" onclick="resetView()">Fechar</button>
+                                </div>
+                                <p id="view-notes" style="background: #F8FAFC; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary);"></p>
+                            </div>
+
+                            <div class="card">
+                                <h3>Registrar Nova Sessão</h3>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div class="form-group">
+                                        <label>Data da Sessão</label>
+                                        <input type="date" id="s-date">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Duração (minutos)</label>
+                                        <input type="number" id="s-duration" value="30">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Pontos Estimulados (ex: F3, F4, T3)</label>
+                                    <input type="text" id="s-points">
+                                </div>
+                                <div class="form-group">
+                                    <label>Observações Clínicas</label>
+                                    <textarea id="s-obs" rows="2"></textarea>
+                                </div>
+                                <button class="full success" onclick="saveSession()">Salvar Sessão</button>
+                            </div>
+
+                            <div class="card">
+                                <h3>Histórico de Atendimento</h3>
+                                <table id="sessions-table">
+                                    <thead>
+                                        <tr><th>Data</th><th>Duração</th><th>Pontos</th><th>Notas</th></tr>
+                                    </thead>
+                                    <tbody id="sessions-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS TAB -->
+            <div id="settings-tab" class="hidden">
+                <div class="card">
+                    <h2>Publicar</h2>
+                    
+                    <h3>URL pública</h3>
+                    <div class="url-box">
+                        <span class="url-text">https://charonefono-prog.github.io/NeuroLaserMap/</span>
+                        <button class="copy-btn" onclick="copyURL()">📋</button>
+                    </div>
+
+                    <h3>Visibilidade</h3>
+                    <div style="margin-bottom: 20px;">
+                        <select id="visibility-select" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px;">
+                            <option value="private">🔒 Somente pessoas convidadas</option>
+                        </select>
+                    </div>
+
+                    <div class="invite-section">
+                        <h3>Convidar Pessoas</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="email" id="invite-email" placeholder="Digite o endereço de e-mail" style="flex: 1; margin-bottom: 0;">
+                            <button class="success" onclick="inviteUser()" style="padding: 10px 20px;">Convidar</button>
+                        </div>
+                    </div>
+
+                    <h3>Pessoas com Acesso</h3>
+                    <div id="users-list"></div>
                 </div>
             </div>
         </div>
@@ -263,14 +370,14 @@
 
     <script>
         const DB = {
-            get: (key) => JSON.parse(localStorage.getItem('nlm_v2_' + key) || '[]'),
-            save: (key, data) => localStorage.setItem('nlm_v2_' + key, JSON.stringify(data))
+            get: (key) => JSON.parse(localStorage.getItem('nlm_v3_' + key) || '[]'),
+            save: (key, data) => localStorage.setItem('nlm_v3_' + key, JSON.stringify(data))
         };
 
         let currentId = null;
 
         window.onload = () => {
-            if (localStorage.getItem('nlm_auth_v2') === 'true') {
+            if (localStorage.getItem('nlm_auth_v3') === 'true') {
                 showMain();
             } else {
                 document.getElementById('auth-screen').classList.remove('hidden');
@@ -279,7 +386,7 @@
 
         function handleAuth() {
             if (document.getElementById('auth-code').value === 'charone2026') {
-                localStorage.setItem('nlm_auth_v2', 'true');
+                localStorage.setItem('nlm_auth_v3', 'true');
                 showMain();
             } else { alert('Código inválido'); }
         }
@@ -287,19 +394,29 @@
         function showMain() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-panel').classList.remove('hidden');
-            updateStats();
-            renderPatients();
+            showTab('dashboard');
+        }
+
+        function showTab(tab) {
+            document.getElementById('dashboard-tab').classList.add('hidden');
+            document.getElementById('settings-tab').classList.add('hidden');
+            document.getElementById(tab + '-tab').classList.remove('hidden');
+            
+            if (tab === 'dashboard') {
+                updateStats();
+                renderPatients();
+            } else if (tab === 'settings') {
+                renderUsers();
+            }
         }
 
         function updateStats() {
             const p = DB.get('patients');
             const s = DB.get('sessions');
+            const u = DB.get('users');
             document.getElementById('stat-patients').innerText = p.length;
             document.getElementById('stat-sessions').innerText = s.length;
-            
-            const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
-            const weekCount = s.filter(x => new Date(x.date) >= weekAgo).length;
-            document.getElementById('stat-week').innerText = weekCount;
+            document.getElementById('stat-users').innerText = u.length;
         }
 
         function renderPatients() {
@@ -408,6 +525,67 @@
             for (let row of rows) {
                 row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
             }
+        }
+
+        function inviteUser() {
+            const email = document.getElementById('invite-email').value;
+            if (!email || !email.includes('@')) return alert('E-mail inválido');
+            
+            const users = DB.get('users');
+            if (users.find(u => u.email === email)) return alert('Este e-mail já foi convidado');
+            
+            const newUser = {
+                id: Date.now().toString(),
+                email: email,
+                name: email.split('@')[0],
+                role: 'Pessoal',
+                avatar: email[0].toUpperCase()
+            };
+            users.push(newUser);
+            DB.save('users', users);
+            document.getElementById('invite-email').value = '';
+            renderUsers();
+            alert('Convite enviado!');
+        }
+
+        function renderUsers() {
+            const users = DB.get('users');
+            const list = document.getElementById('users-list');
+            
+            if (users.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--muted);">Nenhum usuário convidado ainda.</p>';
+                return;
+            }
+
+            list.innerHTML = users.map(u => `
+                <div class="user-item">
+                    <div style="display: flex; align-items: center;">
+                        <div class="user-avatar">${u.avatar}</div>
+                        <div class="user-info">
+                            <p class="user-name">${u.name}</p>
+                            <p class="user-email">${u.email}</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="user-role">${u.role}</span>
+                        <button class="remove-btn" onclick="removeUser('${u.id}')">×</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeUser(id) {
+            if (confirm('Remover este usuário?')) {
+                let users = DB.get('users');
+                users = users.filter(u => u.id !== id);
+                DB.save('users', users);
+                renderUsers();
+            }
+        }
+
+        function copyURL() {
+            const url = 'https://charonefono-prog.github.io/NeuroLaserMap/';
+            navigator.clipboard.writeText(url).then(() => alert('URL copiada!'));
         }
     </script>
 </body>
