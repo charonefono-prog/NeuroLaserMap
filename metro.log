@@ -1,0 +1,110 @@
+nohup: ignoring input
+
+> app-template@1.0.0 dev:metro /home/ubuntu/neuromodulation_mapper
+> cross-env EXPO_USE_METRO_WORKSPACE_ROOT=1 npx expo start --web --port ${EXPO_PORT:-8081}
+
+Starting project at /home/ubuntu/neuromodulation_mapper
+EXPO_USE_METRO_WORKSPACE_ROOT is enabled by default, use EXPO_NO_METRO_WORKSPACE_ROOT instead to disable.
+EXPO_USE_METRO_WORKSPACE_ROOT is enabled by default, use EXPO_NO_METRO_WORKSPACE_ROOT instead to disable.
+EXPO_USE_METRO_WORKSPACE_ROOT is enabled by default, use EXPO_NO_METRO_WORKSPACE_ROOT instead to disable.
+EXPO_USE_METRO_WORKSPACE_ROOT is enabled by default, use EXPO_NO_METRO_WORKSPACE_ROOT instead to disable.
+EXPO_USE_METRO_WORKSPACE_ROOT is enabled by default, use EXPO_NO_METRO_WORKSPACE_ROOT instead to disable.
+EXPO_USE_METRO_WORKSPACE_ROOT is enabled by default, use EXPO_NO_METRO_WORKSPACE_ROOT instead to disable.
+EXPO_USE_METRO_WORKSPACE_ROOT is enabled by default, use EXPO_NO_METRO_WORKSPACE_ROOT instead to disable.
+React Compiler enabled
+Starting Metro Bundler
+EXPO_USE_METRO_WORKSPACE_ROOT is enabled by default, use EXPO_NO_METRO_WORKSPACE_ROOT instead to disable.
+
+TypeScript: The tsconfig.json has been updated (Use EXPO_NO_TYPESCRIPT_SETUP to skip)
+
+› Required modifications made to the tsconfig.json:
+
+  extends is now expo/tsconfig.base
+
+
+The following packages should be updated for best compatibility with the installed expo version:
+  @react-native-community/datetimepicker@8.6.0 - expected version: 8.4.4
+  expo@54.0.31 - expected version: ~54.0.33
+  expo-font@14.0.10 - expected version: ~14.0.11
+  expo-router@6.0.21 - expected version: ~6.0.23
+  expo-video@3.0.15 - expected version: ~3.0.16
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Error: ENOENT: no such file or directory, open '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+    at Object.writeFileSync (node:fs:2426:20)
+    at /home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:90:10
+    at Timeout._onTimeout (/home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:109:7)
+    at listOnTimeout (node:internal/timers:594:17)
+    at processTimers (node:internal/timers:529:7) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+}
+Error: ENOENT: no such file or directory, open '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+    at Object.writeFileSync (node:fs:2426:20)
+    at /home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:90:10
+    at Timeout._onTimeout (/home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:109:7)
+    at listOnTimeout (node:internal/timers:594:17)
+    at processTimers (node:internal/timers:529:7) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+}
+Error: ENOENT: no such file or directory, open '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+    at Object.writeFileSync (node:fs:2426:20)
+    at /home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:90:10
+    at Timeout._onTimeout (/home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:109:7)
+    at listOnTimeout (node:internal/timers:594:17)
+    at processTimers (node:internal/timers:529:7) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+}
+Error: ENOENT: no such file or directory, open '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+    at Object.writeFileSync (node:fs:2426:20)
+    at /home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:90:10
+    at Timeout._onTimeout (/home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:109:7)
+    at listOnTimeout (node:internal/timers:594:17)
+    at processTimers (node:internal/timers:529:7) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+}
+Error: ENOENT: no such file or directory, open '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+    at Object.writeFileSync (node:fs:2426:20)
+    at /home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:90:10
+    at Timeout._onTimeout (/home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:109:7)
+    at listOnTimeout (node:internal/timers:594:17)
+    at processTimers (node:internal/timers:529:7) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+}
+Error: ENOENT: no such file or directory, open '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+    at Object.writeFileSync (node:fs:2426:20)
+    at /home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:90:10
+    at Timeout._onTimeout (/home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:109:7)
+    at listOnTimeout (node:internal/timers:594:17)
+    at processTimers (node:internal/timers:529:7) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+}
+Error: ENOENT: no such file or directory, open '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+    at Object.writeFileSync (node:fs:2426:20)
+    at /home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:90:10
+    at Timeout._onTimeout (/home/ubuntu/neuromodulation_mapper/node_modules/expo-router/src/typed-routes/index.ts:109:7)
+    at listOnTimeout (node:internal/timers:594:17)
+    at processTimers (node:internal/timers:529:7) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/ubuntu/neuromodulation_mapper/.expo/types/router.d.ts'
+}
