@@ -3,590 +3,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroLaserMap - Painel de Controle</title>
+    <title>NeuroLaserMap - Sistema de Mapeamento</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0066CC">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        :root {
-            --primary: #0066CC;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --bg: #F0F2F5;
-            --text: #1A1A1A;
-            --muted: #64748B;
-            --white: #FFFFFF;
-            --border: #E2E8F0;
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        .card {
-            background: var(--white);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 24px;
-        }
-        .hidden { display: none !important; }
-        h1 { color: var(--primary); margin: 0; font-size: 28px; font-weight: 800; }
-        h2 { font-size: 20px; margin: 0 0 20px 0; color: #334155; }
-        h3 { font-size: 16px; margin: 0 0 15px 0; color: #475569; }
-        
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 24px;
-        }
-
-        .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: #475569; }
-        input, select, textarea {
-            width: 100%;
-            padding: 10px 12px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 15px;
-            transition: border-color 0.2s;
-        }
-        input:focus { border-color: var(--primary); outline: none; }
-        
-        button {
-            padding: 10px 20px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        button.full { width: 100%; padding: 12px; font-size: 16px; }
-        button.success { background-color: var(--success); }
-        button.secondary { background-color: #94A3B8; }
-        button:hover { opacity: 0.9; }
-
-        .stats-row {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .stat-card {
-            flex: 1;
-            background: var(--white);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-        .stat-value { font-size: 32px; font-weight: 800; color: var(--primary); }
-        .stat-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 13px; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
-        tr:hover { background-color: #F8FAFC; cursor: pointer; }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-            background: var(--white);
-            padding: 20px 40px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border);
-        }
-        .tab-btn {
-            padding: 10px 20px;
-            background: none;
-            border: none;
-            color: var(--muted);
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-        }
-        .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .invite-section {
-            background: #F8FAFC;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            background: #F8FAFC;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
-        }
-
-        .user-info {
-            flex: 1;
-        }
-        .user-name { font-weight: 600; margin: 0; }
-        .user-email { font-size: 12px; color: var(--muted); margin: 3px 0 0 0; }
-        .user-role { font-size: 12px; color: var(--muted); }
-
-        .remove-btn {
-            background: none;
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            font-size: 20px;
-            padding: 0;
-        }
-
-        .footer {
-            margin-top: 60px;
-            text-align: center;
-            font-size: 12px;
-            color: var(--muted);
-            padding-bottom: 40px;
-        }
-
-        .url-box {
-            background: #F8FAFC;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .url-text { font-weight: 600; }
-        .copy-btn { background: none; border: none; cursor: pointer; font-size: 18px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .sidebar-item.active { background-color: #eff6ff; color: #2563eb; border-right: 4px solid #2563eb; }
+        .card { transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        @media (max-width: 768px) { .desktop-only { display: none; } }
     </style>
 </head>
-<body>
-    <!-- TELA DE LOGIN -->
-    <div id="auth-screen" class="hidden">
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-            <div class="card" style="width: 400px; text-align: center; padding: 40px;">
-                <h1>NeuroLaserMap</h1>
-                <p style="margin: 20px 0;">Painel de Controle Profissional</p>
-                <input type="password" id="auth-code" placeholder="Digite seu código de acesso" style="text-align: center; margin-bottom: 20px;">
-                <button class="full" onclick="handleAuth()">Acessar Painel</button>
+<body class="text-slate-800">
+    <!-- Tela de Login/Autorização -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-100 p-4">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 text-center">
+            <img src="https://charonefono-prog.github.io/NeuroLaserMap/assets/logo.png" alt="Logo" class="w-24 h-24 mx-auto mb-6 rounded-xl shadow-sm" onerror="this.src='https://ui-avatars.com/api/?name=Neuro+Laser+Map&background=2563eb&color=fff'">
+            <h1 class="text-3xl font-bold text-blue-600 mb-2">NeuroLaserMap</h1>
+            <p class="text-slate-500 mb-8">Solicite acesso para utilizar o sistema de mapeamento de neuromodulação.</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="auth-name" placeholder="Nome" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <input type="email" id="auth-email" placeholder="E-mail" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <input type="tel" id="auth-phone" placeholder="Telefone / WhatsApp" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <button onclick="handleAuth()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all transform active:scale-95">
+                    Solicitar Acesso
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- PAINEL PRINCIPAL -->
-    <div id="main-panel" class="hidden">
-        <div class="header">
-            <h1>NeuroLaserMap</h1>
-            <div style="display: flex; gap: 10px;">
-                <button class="success" onclick="exportToCSV()">💾 Exportar Dados</button>
-                <button onclick="showTab('dashboard')">Painel</button>
-                <button onclick="showTab('settings')">⚙️ Configurações</button>
+    <!-- Dashboard Principal -->
+    <div id="main-app" class="hidden min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Desktop -->
+        <aside class="desktop-only w-64 bg-white border-r border-slate-200 flex flex-col">
+            <div class="p-6 border-bottom border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">NL</div>
+                    <span class="font-bold text-xl text-slate-800">NeuroLaser</span>
+                </div>
             </div>
-        </div>
+            <nav class="flex-1 py-4">
+                <button onclick="showTab('home')" id="tab-home-btn" class="sidebar-item active w-full flex items-center gap-4 px-6 py-4 text-slate-600 hover:bg-slate-50 transition-all">
+                    <span class="material-icons">dashboard</span>
+                    <span class="font-medium">Dashboard</span>
+                </button>
+                <button onclick="showTab('patients')" id="tab-patients-btn" class="sidebar-item w-full flex items-center gap-4 px-6 py-4 text-slate-600 hover:bg-slate-50 transition-all">
+                    <span class="material-icons">people</span>
+                    <span class="font-medium">Pacientes</span>
+                </button>
+                <button onclick="showTab('sessions')" id="tab-sessions-btn" class="sidebar-item w-full flex items-center gap-4 px-6 py-4 text-slate-600 hover:bg-slate-50 transition-all">
+                    <span class="material-icons">history</span>
+                    <span class="font-medium">Sessões</span>
+                </button>
+                <button onclick="showTab('admin')" id="tab-admin-btn" class="sidebar-item w-full flex items-center gap-4 px-6 py-4 text-slate-600 hover:bg-slate-50 transition-all">
+                    <span class="material-icons">settings</span>
+                    <span class="font-medium">Publicar</span>
+                </button>
+            </nav>
+            <div class="p-6 border-t border-slate-100">
+                <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">Desenvolvido por:</p>
+                <p class="text-xs font-semibold text-slate-800">Carlos Charone</p>
+            </div>
+        </aside>
 
-        <div class="container" style="padding-top: 0;">
-            <!-- DASHBOARD TAB -->
-            <div id="dashboard-tab" class="hidden">
-                <div class="stats-row">
-                    <div class="stat-card">
-                        <div class="stat-label">Pacientes Cadastrados</div>
-                        <div class="stat-value" id="stat-patients">0</div>
+        <!-- Conteúdo Principal -->
+        <main class="flex-1 flex flex-col bg-slate-50">
+            <!-- Header -->
+            <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+                <h2 id="page-title" class="text-xl font-bold text-slate-800">Dashboard</h2>
+                <div class="flex items-center gap-4">
+                    <button onclick="exportData()" class="flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-lg font-semibold hover:bg-emerald-100 transition-all">
+                        <span class="material-icons text-sm">download</span>
+                        Exportar Excel
+                    </button>
+                    <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-500">
+                        <span class="material-icons">person</span>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total de Sessões</div>
-                        <div class="stat-value" id="stat-sessions">0</div>
+                </div>
+            </header>
+
+            <!-- Tabs Content -->
+            <div class="p-8 flex-1 overflow-y-auto">
+                <!-- Tab: Home -->
+                <div id="tab-home" class="tab-content space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 card">
+                            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4">
+                                <span class="material-icons">people</span>
+                            </div>
+                            <p class="text-3xl font-bold text-slate-800" id="stat-total-patients">0</p>
+                            <p class="text-sm text-slate-500 font-medium">Total Pacientes</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 card">
+                            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                                <span class="material-icons">check_circle</span>
+                            </div>
+                            <p class="text-3xl font-bold text-slate-800" id="stat-active-patients">0</p>
+                            <p class="text-sm text-slate-500 font-medium">Ativos</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 card">
+                            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4">
+                                <span class="material-icons">event</span>
+                            </div>
+                            <p class="text-3xl font-bold text-slate-800" id="stat-today-sessions">0</p>
+                            <p class="text-sm text-slate-500 font-medium">Sessões Hoje</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 card">
+                            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-4">
+                                <span class="material-icons">trending_up</span>
+                            </div>
+                            <p class="text-3xl font-bold text-slate-800" id="stat-week-sessions">0</p>
+                            <p class="text-sm text-slate-500 font-medium">Esta Semana</p>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Usuários Convidados</div>
-                        <div class="stat-value" id="stat-users">0</div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-slate-800">Ações Rápidas</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button onclick="showTab('patients')" class="flex items-center justify-between p-6 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all group">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-icons">person_add</span>
+                                    <span class="font-bold">Gerenciar Pacientes</span>
+                                </div>
+                                <span class="material-icons group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                            <button onclick="exportData()" class="flex items-center justify-between p-6 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl hover:bg-emerald-100 transition-all group">
+                                <div class="flex items-center gap-4">
+                                    <span class="material-icons">description</span>
+                                    <span class="font-bold">Relatório Completo</span>
+                                </div>
+                                <span class="material-icons group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="dashboard-grid">
-                    <div class="card">
-                        <h2>Pacientes</h2>
-                        <input type="text" id="search-patient" placeholder="Buscar paciente..." onkeyup="filterPatients()">
-                        <div style="max-height: 500px; overflow-y: auto;">
-                            <table id="patients-table">
-                                <thead>
-                                    <tr><th>Nome</th><th>Ações</th></tr>
-                                </thead>
-                                <tbody id="patients-body"></tbody>
-                            </table>
+                <!-- Tab: Patients -->
+                <div id="tab-patients" class="tab-content hidden space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="relative w-96">
+                            <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input type="text" id="patient-search" oninput="renderPatients()" placeholder="Buscar paciente..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
+                        <button onclick="openNewPatientModal()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition-all">
+                            <span class="material-icons">add</span>
+                            Novo Paciente
+                        </button>
                     </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr>
+                                    <th class="px-6 py-4 font-bold text-slate-600 text-sm">NOME</th>
+                                    <th class="px-6 py-4 font-bold text-slate-600 text-sm">DIAGNÓSTICO</th>
+                                    <th class="px-6 py-4 font-bold text-slate-600 text-sm">STATUS</th>
+                                    <th class="px-6 py-4 font-bold text-slate-600 text-sm">AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patients-list">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-                    <div id="content-area">
-                        <div class="card" id="welcome-msg">
-                            <div style="text-align: center; padding: 60px 20px;">
-                                <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
-                                <h2>Bem-vindo ao seu Painel</h2>
-                                <p>Selecione um paciente ao lado para ver o histórico ou registrar novas sessões.</p>
-                            </div>
-                        </div>
-
-                        <div class="card hidden" id="patient-form">
-                            <h2>Cadastrar Novo Paciente</h2>
-                            <div class="form-group">
-                                <label>Nome Completo</label>
-                                <input type="text" id="p-name">
-                            </div>
-                            <div class="form-group">
-                                <label>Data de Nascimento</label>
-                                <input type="date" id="p-birth">
-                            </div>
-                            <div class="form-group">
-                                <label>Diagnóstico / Notas</label>
-                                <textarea id="p-notes" rows="4"></textarea>
-                            </div>
-                            <div style="display: flex; gap: 10px;">
-                                <button class="full" onclick="savePatient()">Salvar Paciente</button>
-                                <button class="full secondary" onclick="resetView()">Cancelar</button>
-                            </div>
-                        </div>
-
-                        <div class="hidden" id="patient-record">
-                            <div class="card">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h2 id="view-name">Nome do Paciente</h2>
-                                    <button class="secondary" onclick="resetView()">Fechar</button>
-                                </div>
-                                <p id="view-notes" style="background: #F8FAFC; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary);"></p>
-                            </div>
-
-                            <div class="card">
-                                <h3>Registrar Nova Sessão</h3>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                    <div class="form-group">
-                                        <label>Data da Sessão</label>
-                                        <input type="date" id="s-date">
+                <!-- Tab: Admin (SparkVozApp Style) -->
+                <div id="tab-admin" class="tab-content hidden">
+                    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+                        <div class="p-8 border-b border-slate-100">
+                            <h3 class="text-2xl font-bold text-slate-800 mb-6">Publicar</h3>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-500 uppercase mb-2">URL pública</label>
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex-1 bg-slate-50 px-4 py-3 rounded-lg border border-slate-200 text-slate-600 font-medium truncate">
+                                            www.neurolasermap.com
+                                        </div>
+                                        <button class="p-3 bg-slate-100 rounded-lg text-slate-500 hover:bg-slate-200">
+                                            <span class="material-icons text-sm">content_copy</span>
+                                        </button>
+                                        <button class="p-3 bg-slate-100 rounded-lg text-slate-500 hover:bg-slate-200">
+                                            <span class="material-icons text-sm">smartphone</span>
+                                        </button>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Duração (minutos)</label>
-                                        <input type="number" id="s-duration" value="30">
+                                    <button class="mt-2 text-blue-600 font-bold text-sm flex items-center gap-1">
+                                        <span class="material-icons text-sm">add</span> Personalizar domínio
+                                    </button>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-bold text-slate-500 uppercase mb-2">Visibilidade</label>
+                                    <div class="relative">
+                                        <div class="w-full bg-slate-50 px-4 py-3 rounded-lg border border-slate-200 flex items-center justify-between cursor-pointer">
+                                            <div class="flex items-center gap-3">
+                                                <span class="material-icons text-slate-500">lock</span>
+                                                <span class="font-medium">Somente pessoas convidadas</span>
+                                            </div>
+                                            <span class="material-icons">expand_more</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Pontos Estimulados (ex: F3, F4, T3)</label>
-                                    <input type="text" id="s-points">
-                                </div>
-                                <div class="form-group">
-                                    <label>Observações Clínicas</label>
-                                    <textarea id="s-obs" rows="2"></textarea>
-                                </div>
-                                <button class="full success" onclick="saveSession()">Salvar Sessão</button>
-                            </div>
 
-                            <div class="card">
-                                <h3>Histórico de Atendimento</h3>
-                                <table id="sessions-table">
-                                    <thead>
-                                        <tr><th>Data</th><th>Duração</th><th>Pontos</th><th>Notas</th></tr>
-                                    </thead>
-                                    <tbody id="sessions-body"></tbody>
-                                </table>
+                                <div class="flex gap-2">
+                                    <input type="email" id="invite-email" placeholder="Digite o endereço de e-mail" class="flex-1 px-4 py-3 rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500">
+                                    <button onclick="addInvite()" class="bg-slate-800 text-white px-8 py-3 rounded-lg font-bold hover:bg-slate-900 transition-all">
+                                        Convidar
+                                    </button>
+                                </div>
+
+                                <div class="space-y-4 pt-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold">C</div>
+                                            <div>
+                                                <p class="font-bold text-slate-800">Carlos Charone</p>
+                                                <p class="text-xs text-slate-500">charonefono@icloud.com</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-xs font-bold text-slate-400 uppercase">Proprietário</span>
+                                    </div>
+                                    <div id="invites-list" class="space-y-4">
+                                        <!-- Convidados via JS -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- SETTINGS TAB -->
-            <div id="settings-tab" class="hidden">
-                <div class="card">
-                    <h2>Publicar</h2>
-                    
-                    <h3>URL pública</h3>
-                    <div class="url-box">
-                        <span class="url-text">https://charonefono-prog.github.io/NeuroLaserMap/</span>
-                        <button class="copy-btn" onclick="copyURL()">📋</button>
-                    </div>
-
-                    <h3>Visibilidade</h3>
-                    <div style="margin-bottom: 20px;">
-                        <select id="visibility-select" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px;">
-                            <option value="private">🔒 Somente pessoas convidadas</option>
-                        </select>
-                    </div>
-
-                    <div class="invite-section">
-                        <h3>Convidar Pessoas</h3>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="email" id="invite-email" placeholder="Digite o endereço de e-mail" style="flex: 1; margin-bottom: 0;">
-                            <button class="success" onclick="inviteUser()" style="padding: 10px 20px;">Convidar</button>
-                        </div>
-                    </div>
-
-                    <h3>Pessoas com Acesso</h3>
-                    <div id="users-list"></div>
-                </div>
+    <!-- Modais -->
+    <div id="modal-overlay" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden">
+            <div id="modal-content" class="p-8">
+                <!-- Conteúdo Dinâmico -->
             </div>
-        </div>
-
-        <div class="footer">
-            <p><strong>NeuroLaserMap</strong> - Sistema Profissional de Mapeamento de Neuromodulação</p>
-            <p>Desenvolvido por Carlos Charone &copy; 2026</p>
         </div>
     </div>
 
     <script>
-        const DB = {
-            get: (key) => JSON.parse(localStorage.getItem('nlm_v3_' + key) || '[]'),
-            save: (key, data) => localStorage.setItem('nlm_v3_' + key, JSON.stringify(data))
-        };
+        // Estado da Aplicação
+        let patients = JSON.parse(localStorage.getItem('nl_patients') || '[]');
+        let sessions = JSON.parse(localStorage.getItem('nl_sessions') || '[]');
+        let invites = JSON.parse(localStorage.getItem('nl_invites') || '[]');
+        let currentUser = null;
 
-        let currentId = null;
+        // Inicialização
+        function init() {
+            updateStats();
+            renderPatients();
+            renderInvites();
+        }
 
-        window.onload = () => {
-            if (localStorage.getItem('nlm_auth_v3') === 'true') {
-                showMain();
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-            }
-        };
-
+        // Autenticação
         function handleAuth() {
-            if (document.getElementById('auth-code').value === 'charone2026') {
-                localStorage.setItem('nlm_auth_v3', 'true');
-                showMain();
-            } else { alert('Código inválido'); }
-        }
-
-        function showMain() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('main-panel').classList.remove('hidden');
-            showTab('dashboard');
-        }
-
-        function showTab(tab) {
-            document.getElementById('dashboard-tab').classList.add('hidden');
-            document.getElementById('settings-tab').classList.add('hidden');
-            document.getElementById(tab + '-tab').classList.remove('hidden');
+            const name = document.getElementById('auth-name').value;
+            const email = document.getElementById('auth-email').value;
             
-            if (tab === 'dashboard') {
-                updateStats();
-                renderPatients();
-            } else if (tab === 'settings') {
-                renderUsers();
+            if (name === 'charone2026') {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                init();
+            } else {
+                alert('Acesso restrito. Sua solicitação foi enviada para análise.');
+                // Simular salvamento de solicitação
+                console.log('Solicitação:', { name, email });
             }
         }
 
-        function updateStats() {
-            const p = DB.get('patients');
-            const s = DB.get('sessions');
-            const u = DB.get('users');
-            document.getElementById('stat-patients').innerText = p.length;
-            document.getElementById('stat-sessions').innerText = s.length;
-            document.getElementById('stat-users').innerText = u.length;
+        // Navegação
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabId + '-btn').classList.add('active');
+            
+            const titles = { home: 'Dashboard', patients: 'Pacientes', sessions: 'Sessões', admin: 'Publicar' };
+            document.getElementById('page-title').innerText = titles[tabId];
         }
 
+        // Estatísticas
+        function updateStats() {
+            document.getElementById('stat-total-patients').innerText = patients.length;
+            document.getElementById('stat-active-patients').innerText = patients.filter(p => p.status === 'active').length;
+            document.getElementById('stat-today-sessions').innerText = sessions.filter(s => new Date(s.date).toDateString() === new Date().toDateString()).length;
+            document.getElementById('stat-week-sessions').innerText = sessions.length; // Simplificado
+        }
+
+        // Gerenciamento de Pacientes
         function renderPatients() {
-            const p = DB.get('patients');
-            const body = document.getElementById('patients-body');
-            body.innerHTML = p.map(x => `
-                <tr onclick="viewPatient('${x.id}')">
-                    <td><strong>${x.name}</strong></td>
-                    <td><button class="secondary" style="padding: 4px 8px; font-size: 11px;">Ver Prontuário</button></td>
+            const list = document.getElementById('patients-list');
+            const search = document.getElementById('patient-search').value.toLowerCase();
+            const filtered = patients.filter(p => p.name.toLowerCase().includes(search));
+            
+            list.innerHTML = filtered.map(p => `
+                <tr class="border-b border-slate-50 hover:bg-slate-50 transition-all">
+                    <td class="px-6 py-4 font-bold text-slate-800">${p.name}</td>
+                    <td class="px-6 py-4 text-slate-500">${p.diagnosis || '-'}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${p.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}">
+                            ${p.status === 'active' ? 'Ativo' : 'Inativo'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <button onclick="viewPatient('${p.id}')" class="text-blue-600 font-bold text-sm hover:underline">Ver Prontuário</button>
+                    </td>
                 </tr>
             `).join('');
         }
 
-        function showPatientForm() {
-            resetView();
-            document.getElementById('welcome-msg').classList.add('hidden');
-            document.getElementById('patient-form').classList.remove('hidden');
+        function openNewPatientModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            overlay.classList.remove('hidden');
+            content.innerHTML = `
+                <h3 class="text-xl font-bold mb-6">Novo Paciente</h3>
+                <div class="space-y-4">
+                    <input type="text" id="new-p-name" placeholder="Nome Completo" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="new-p-diag" placeholder="Diagnóstico" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="flex gap-4">
+                        <button onclick="closeModal()" class="flex-1 py-3 font-bold text-slate-500 hover:bg-slate-50 rounded-xl">Cancelar</button>
+                        <button onclick="savePatient()" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700">Salvar</button>
+                    </div>
+                </div>
+            `;
         }
 
         function savePatient() {
-            const name = document.getElementById('p-name').value;
-            if (!name) return alert('Nome obrigatório');
-            const p = DB.get('patients');
-            const newP = {
-                id: Date.now().toString(),
-                name: name,
-                birth: document.getElementById('p-birth').value,
-                notes: document.getElementById('p-notes').value
-            };
-            p.unshift(newP);
-            DB.save('patients', p);
-            resetView();
+            const name = document.getElementById('new-p-name').value;
+            const diag = document.getElementById('new-p-diag').value;
+            if (!name) return alert('Nome é obrigatório');
+            
+            const newP = { id: Date.now().toString(), name, diagnosis: diag, status: 'active', createdAt: new Date() };
+            patients.push(newP);
+            localStorage.setItem('nl_patients', JSON.stringify(patients));
+            closeModal();
             renderPatients();
             updateStats();
         }
 
-        function viewPatient(id) {
-            currentId = id;
-            const p = DB.get('patients').find(x => x.id === id);
-            document.getElementById('welcome-msg').classList.add('hidden');
-            document.getElementById('patient-form').classList.add('hidden');
-            document.getElementById('patient-record').classList.remove('hidden');
-            document.getElementById('view-name').innerText = p.name;
-            document.getElementById('view-notes').innerText = p.notes || 'Sem observações cadastradas.';
-            document.getElementById('s-date').valueAsDate = new Date();
-            renderSessions();
-        }
-
-        function renderSessions() {
-            const s = DB.get('sessions').filter(x => x.pId === currentId);
-            const body = document.getElementById('sessions-body');
-            body.innerHTML = s.map(x => `
-                <tr>
-                    <td>${new Date(x.date).toLocaleDateString()}</td>
-                    <td>${x.dur} min</td>
-                    <td>${x.pts}</td>
-                    <td>${x.obs}</td>
-                </tr>
+        // Gerenciamento de Convites (Admin)
+        function renderInvites() {
+            const list = document.getElementById('invites-list');
+            list.innerHTML = invites.map(inv => `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 font-bold">
+                            ${inv.email[0].toUpperCase()}
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800">${inv.email.split('@')[0]}</p>
+                            <p class="text-xs text-slate-500">${inv.email}</p>
+                        </div>
+                    </div>
+                    <button onclick="removeInvite('${inv.id}')" class="text-slate-400 hover:text-red-500">
+                        <span class="material-icons text-sm">close</span>
+                    </button>
+                </div>
             `).join('');
         }
 
-        function saveSession() {
-            const s = DB.get('sessions');
-            const newS = {
-                pId: currentId,
-                date: document.getElementById('s-date').value,
-                dur: document.getElementById('s-duration').value,
-                pts: document.getElementById('s-points').value,
-                obs: document.getElementById('s-obs').value
-            };
-            s.unshift(newS);
-            DB.save('sessions', s);
-            renderSessions();
-            updateStats();
-            alert('Sessão salva!');
+        function addInvite() {
+            const email = document.getElementById('invite-email').value;
+            if (!email || !email.includes('@')) return alert('E-mail inválido');
+            
+            invites.push({ id: Date.now().toString(), email });
+            localStorage.setItem('nl_invites', JSON.stringify(invites));
+            document.getElementById('invite-email').value = '';
+            renderInvites();
         }
 
-        function resetView() {
-            document.getElementById('patient-form').classList.add('hidden');
-            document.getElementById('patient-record').classList.add('hidden');
-            document.getElementById('welcome-msg').classList.remove('hidden');
+        function removeInvite(id) {
+            invites = invites.filter(i => i.id !== id);
+            localStorage.setItem('nl_invites', JSON.stringify(invites));
+            renderInvites();
         }
 
-        function exportToCSV() {
-            const p = DB.get('patients');
-            const s = DB.get('sessions');
-            let csv = "Paciente,Data Sessao,Duracao,Pontos,Notas\n";
-            s.forEach(x => {
-                const name = p.find(y => y.id === x.pId)?.name || 'Desconhecido';
-                csv += `${name},${x.date},${x.dur},${x.pts},${x.obs}\n`;
-            });
+        // Utilitários
+        function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+        function exportData() {
+            let csv = 'Nome,Diagnóstico,Status\n';
+            patients.forEach(p => csv += `${p.name},${p.diagnosis},${p.status}\n`);
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.setAttribute('hidden', '');
             a.setAttribute('href', url);
-            a.setAttribute('download', 'NeuroLaserMap_Dados.csv');
+            a.setAttribute('download', 'pacientes_neurolasermap.csv');
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
         }
 
-        function filterPatients() {
-            const val = document.getElementById('search-patient').value.toLowerCase();
-            const rows = document.getElementById('patients-body').getElementsByTagName('tr');
-            for (let row of rows) {
-                row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
-            }
-        }
-
-        function inviteUser() {
-            const email = document.getElementById('invite-email').value;
-            if (!email || !email.includes('@')) return alert('E-mail inválido');
-            
-            const users = DB.get('users');
-            if (users.find(u => u.email === email)) return alert('Este e-mail já foi convidado');
-            
-            const newUser = {
-                id: Date.now().toString(),
-                email: email,
-                name: email.split('@')[0],
-                role: 'Pessoal',
-                avatar: email[0].toUpperCase()
-            };
-            users.push(newUser);
-            DB.save('users', users);
-            document.getElementById('invite-email').value = '';
-            renderUsers();
-            alert('Convite enviado!');
-        }
-
-        function renderUsers() {
-            const users = DB.get('users');
-            const list = document.getElementById('users-list');
-            
-            if (users.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: var(--muted);">Nenhum usuário convidado ainda.</p>';
-                return;
-            }
-
-            list.innerHTML = users.map(u => `
-                <div class="user-item">
-                    <div style="display: flex; align-items: center;">
-                        <div class="user-avatar">${u.avatar}</div>
-                        <div class="user-info">
-                            <p class="user-name">${u.name}</p>
-                            <p class="user-email">${u.email}</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span class="user-role">${u.role}</span>
-                        <button class="remove-btn" onclick="removeUser('${u.id}')">×</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function removeUser(id) {
-            if (confirm('Remover este usuário?')) {
-                let users = DB.get('users');
-                users = users.filter(u => u.id !== id);
-                DB.save('users', users);
-                renderUsers();
-            }
-        }
-
-        function copyURL() {
-            const url = 'https://charonefono-prog.github.io/NeuroLaserMap/';
-            navigator.clipboard.writeText(url).then(() => alert('URL copiada!'));
-        }
+        // Iniciar
+        init();
     </script>
 </body>
 </html>
