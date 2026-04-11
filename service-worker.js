@@ -1,12 +1,12 @@
 const CACHE_NAME = 'neurolasermap-v1';
 const RUNTIME_CACHE = 'neurolasermap-runtime-v1';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './assets/images/icon.png',
-  './assets/images/splash-icon.png',
-  './assets/images/favicon.png',
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/assets/images/icon.png',
+  '/assets/images/splash-icon.png',
+  '/assets/images/favicon.png',
 ];
 
 // Install event - cache essential assets
@@ -127,7 +127,7 @@ self.addEventListener('fetch', (event) => {
               return response;
             }
             // Return offline page
-            return caches.match('./index.html');
+            return caches.match('/index.html');
           });
         })
     );
