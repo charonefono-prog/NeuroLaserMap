@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
 
 // Mock database de usuários
 const users = {
@@ -77,6 +76,9 @@ app.post('/api/patients', (req, res) => {
   patients.push(newPatient);
   res.json({ success: true, patient: newPatient });
 });
+
+// Servir arquivos estáticos
+app.use(express.static('public'));
 
 // Servir index.html para todas as rotas (SPA)
 app.get('*', (req, res) => {
